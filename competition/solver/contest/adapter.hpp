@@ -28,11 +28,10 @@ struct Output {
 
 Json read_json(const std::string &path);
 MapDocument parse_map(const Json &document);
-void validate_contest_map(const MapDocument &map);
 void validate_day_shape(const Json &document, size_t agents);
 Json validate_kinds(const Json &document, size_t agents);
 Input convert(const MapDocument &map, const Json &day,
-              const std::optional<Json> &history, bool allow_synthetic = false);
+              const std::optional<Json> &history);
 DailyPlan parse_answer(const Json &answer, const Case &c);
 Output validate_answer(const Input &input, const Json &answer, bool fallback = false);
 Output solve(const Input &input, bool offline = false, int64_t test_check_budget = -1,

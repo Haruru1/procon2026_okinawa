@@ -63,7 +63,7 @@ void agent_shapes(const Json &agents, const std::string &path, size_t count) {
         const auto p = index_path(path, i);
         object(agents[i], p, {"kind", "pos", "fuel"});
         integer(agents[i]["kind"], p + ".kind", 0, 1);
-        integer(agents[i]["pos"], p + ".pos", 0, 1023);
+        integer(agents[i]["pos"], p + ".pos", 0, INT_MAX);
         integer(agents[i]["fuel"], p + ".fuel", 0, INT_MAX);
     }
 }
@@ -98,7 +98,7 @@ std::vector<std::vector<int>> history_sets(const MapDocument &map, const Json &d
     // Full structured equality, not a collision-prone hash or file identity.
     if (h["map_config"] != map.raw)
         fail("history.map_config", "does not match this match's exact map configuration");
-    if (integer(h["completed_days"], "history.completed_days", 0, 10) != d)
+    if (integer(h["completed_days"], "history.completed_days", 0, INT_MAX) != d)
         fail("history.completed_days", "does not match daily day index");
     auto kinds = validate_kinds(h["agent_kinds"], n);
     array(h["collected_brands"], "history.collected_brands", n, n);
@@ -214,24 +214,28 @@ MapDocument parse_map(const Json &j) {
     MapDocument m;
     m.raw = j;
     m.starts_at = integer(j["startsAt"], "startsAt", 0, 9007199254740991LL);
-    auto steps = integers(j["daySteps"], "daySteps", 1, 10, 1, 256);
+    auto steps = integers(j["daySteps"], "daySteps", 1, std::numeric_limits<size_t>::max(), 1, INT_MAX);
     m.day_steps.assign(steps.begin(), steps.end());
     m.day_seconds = integers(j["daySeconds"], "daySeconds", steps.size(), steps.size(), 1, INT_MAX);
     object(j["map"], "map", {"height", "width", "cells"});
-    m.width = int(integer(j["map"]["width"], "map.width", 1, 32));
-    m.height = int(integer(j["map"]["height"], "map.height", 1, 32));
-    array(j["map"]["cells"], "map.cells", m.height, m.height);
+    m.width = int(integer(j["map"]["width"], "map.width", 1, INT_MAX));
+    m.height = int(integer(j["map"]["height"], "map.height", 1, INT_MAX));
+    const int64_t cell_count64 = int64_t(m.width) * int64_t(m.height);
+    if (cell_count64 > INT_MAX)
+        fail("map", "cell count exceeds supported signed-int index range");
+    const int cell_count = int(cell_count64);
+    array(j["map"]["cells"], "map.cells", size_t(m.height), size_t(m.height));
     for (int y = 0; y < m.height; ++y) {
         auto row = integers(j["map"]["cells"][y], index_path("map.cells", y), m.width, m.width, 0, 3);
         m.terrain.insert(m.terrain.end(), row.begin(), row.end());
     }
-    auto positions = integers(j["agents"], "agents", 1, 8, 0, m.width * m.height - 1);
+    auto positions = integers(j["agents"], "agents", 1, std::numeric_limits<size_t>::max(), 0, cell_count - 1);
     m.initial_positions.assign(positions.begin(), positions.end());
-    m.capacity = int(integer(j["fuelLimits"], "fuelLimits", 1, 768));
+    m.capacity = int(integer(j["fuelLimits"], "fuelLimits", 1, INT_MAX));
     m.players = int(integer(j["players"], "players", 1, INT_MAX));
-    integer(j["busyThreshold"], "busyThreshold", 1, 5);
-    integer(j["jammedThreshold"], "jammedThreshold", 2, 10);
-    array(j["spots"], "spots", 0, 32);
+    integer(j["busyThreshold"], "busyThreshold", INT_MIN, INT_MAX);
+    integer(j["jammedThreshold"], "jammedThreshold", INT_MIN, INT_MAX);
+    array(j["spots"], "spots", 0, size_t(cell_count));
     std::set<int> cells;
     for (size_t i = 0; i < j["spots"].size(); ++i) {
         const auto &s = j["spots"][i];
@@ -241,7 +245,7 @@ MapDocument parse_map(const Json &j) {
         int pos = int(integer(s["pos"], p + ".pos", 0, m.width * m.height - 1));
         if (m.terrain[pos] != 0 || !cells.insert(pos).second)
             fail(p + ".pos", "Spot requires its own plain cell");
-        integer(s["stocks"], p + ".stocks", 1, positions.size());
+        integer(s["stocks"], p + ".stocks", 1, INT_MAX);
     }
     std::sort(m.brands.begin(), m.brands.end());
     m.brands.erase(std::unique(m.brands.begin(), m.brands.end()), m.brands.end());
@@ -251,48 +255,10 @@ MapDocument parse_map(const Json &j) {
     return m;
 }
 
-void validate_contest_map(const MapDocument &m) {
-    if (m.width < 8 || m.height < 8 || m.day_steps.size() < 4 || m.initial_positions.size() < 3)
-        fail("contest", "requires H,W>=8, days>=4 and agents>=3; synthetic tests need --allow-synthetic");
-    if (m.raw["spots"].size() < m.initial_positions.size() ||
-        m.raw["spots"].size() > size_t(std::max(m.width, m.height)))
-        fail("contest.spots", "Spot count must be agents..max(height,width)");
-    for (int t : m.day_steps)
-        if (t < m.width + m.height || t > 4 * (m.width + m.height))
-            fail("contest.daySteps", "horizon violates PDF Q20");
-    if (m.capacity < m.day_steps[0] || m.capacity > 3 * m.day_steps[0])
-        fail("contest.fuelLimits", "capacity violates PDF Q14/Q60");
-    for (int terrain = 0; terrain < 4; ++terrain)
-        if (std::find(m.terrain.begin(), m.terrain.end(), terrain) == m.terrain.end())
-            fail("contest.map", "each terrain must exist (Q35)");
-    std::set<int> initial;
-    for (int pos : m.initial_positions) {
-        if (m.terrain[pos] != 0 || !initial.insert(pos).second)
-            fail("contest.agents", "initial positions must be distinct plain cells");
-        for (const auto &s : m.raw["spots"])
-            if (s["pos"] == pos)
-                fail("contest.agents", "initial positions must not be Spots");
-    }
-    Map geometry;
-    geometry.width = m.width;
-    geometry.height = m.height;
-    geometry.cells.resize(m.terrain.size());
-    std::set<int> reached{m.initial_positions.front()};
-    std::vector<int> queue{m.initial_positions.front()};
-    for (size_t i = 0; i < queue.size(); ++i)
-        for (int d = 0; d < 6; ++d) {
-            int next = geometry.neighbor(queue[i], d);
-            if (next >= 0 && m.terrain[next] != 3 && reached.insert(next).second)
-                queue.push_back(next);
-        }
-    if (reached.size() != size_t(std::count_if(m.terrain.begin(), m.terrain.end(), [](int t) { return t != 3; })))
-        fail("contest.map", "traversable cells must be connected");
-}
-
 void validate_day_shape(const Json &j, size_t n) {
     object(j, "daily", {"endsAt", "day", "agents", "others", "traffics"});
     integer(j["endsAt"], "endsAt", 0, 9007199254740991LL);
-    integer(j["day"], "day", 0, 9);
+    integer(j["day"], "day", 0, INT_MAX);
     agent_shapes(j["agents"], "daily.agents", n);
     array(j["others"], "others", 0, 10000);
     std::set<int64_t> ids;
@@ -304,12 +270,12 @@ void validate_day_shape(const Json &j, size_t n) {
             fail(p + ".id", "duplicate other-team ID");
         agent_shapes(other["agents"], p + ".agents", n);
     }
-    array(j["traffics"], "traffics", 0, 1024);
+    array(j["traffics"], "traffics", 0, std::numeric_limits<size_t>::max());
     std::set<int> positions;
     for (size_t i = 0; i < j["traffics"].size(); ++i) {
         auto p = index_path("traffics", i);
         object(j["traffics"][i], p, {"pos", "status"});
-        int pos = int(integer(j["traffics"][i]["pos"], p + ".pos", 0, 1023));
+        int pos = int(integer(j["traffics"][i]["pos"], p + ".pos", 0, INT_MAX));
         if (!positions.insert(pos).second)
             fail(p + ".pos", "duplicate traffic cell");
         integer(j["traffics"][i]["status"], p + ".status", 0, 2);
@@ -321,11 +287,8 @@ Json validate_kinds(const Json &j, size_t n) {
     return j;
 }
 
-Input convert(const MapDocument &m, const Json &day, const std::optional<Json> &history,
-              bool allow_synthetic) {
+Input convert(const MapDocument &m, const Json &day, const std::optional<Json> &history) {
     validate_day_shape(day, m.initial_positions.size());
-    if (!allow_synthetic)
-        validate_contest_map(m);
     int d = day["day"];
     if (d >= int(m.day_steps.size()))
         fail("day", "index is outside daySteps; first day is zero");
@@ -334,20 +297,12 @@ Input convert(const MapDocument &m, const Json &day, const std::optional<Json> &
     agent_physics(m, day["agents"], "daily.agents");
     for (size_t i = 0; i < day["others"].size(); ++i)
         agent_physics(m, day["others"][i]["agents"], index_path("others", i) + ".agents");
-    if (!allow_synthetic && d == 0)
-        for (size_t i = 0; i < m.initial_positions.size(); ++i) {
-            const auto &a = day["agents"][i];
-            if (a["pos"] != m.initial_positions[i] || (a["kind"] == 0 && a["fuel"] != m.capacity))
-                fail("daily.agents", "first-day position/fuel disagrees with initial conditions");
-        }
     std::vector<int> status(m.terrain.size(), -1);
     for (const auto &x : day["traffics"]) {
         int pos = x["pos"];
         if (pos >= int(m.terrain.size()) || m.terrain[pos] != 1)
             fail("traffics.pos", "entry is not a road cell; PDF p17/p18 samples are inconsistent");
         status[pos] = x["status"];
-        if (!allow_synthetic && d == 0 && status[pos] != 0)
-            fail("traffics.status", "first-day roads must be free");
     }
     Json cells = Json::array(), spots = Json::array(), agents = Json::array();
     static const char *terrains[] = {"plain", "road", "mountain", "lake"};

@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     try {
         std::vector<std::string> files;
         std::string history, report, answer, kinds;
-        bool offline = false, synthetic = false, inspect = false, shape = false, fallback = false;
+        bool offline = false, inspect = false, shape = false, fallback = false;
         int64_t checks = -1;
         double budget = wire::solver_seconds;
         for (int i = 1; i < argc; ++i) {
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
             if (arg == "--help") {
                 std::cout << "Usage: contest_solver map.json day.json [--history history.json]\n"
                              "  [--offline] [--report report.json] [--validate-answer answer.json]\n"
-                             "  [--fallback-on-invalid] [--inspect] [--allow-synthetic]\n"
+                             "  [--fallback-on-invalid] [--inspect]\n"
                              "  [--budget-seconds 0..55]: shorten the caller budget for a live match.\n"
                              "  --check-format: validate PDF JSON shape only (no solver/answer).\n"
                              "  map.json --kinds kinds.json: validate/output type selection array.\n"
@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
             else if (arg == "--validate-answer") answer = value();
             else if (arg == "--kinds") kinds = value();
             else if (arg == "--offline") offline = true;
-            else if (arg == "--allow-synthetic") synthetic = true;
             else if (arg == "--inspect") inspect = true;
             else if (arg == "--check-format") shape = true;
             else if (arg == "--fallback-on-invalid") fallback = true;
@@ -57,8 +56,8 @@ int main(int argc, char **argv) {
         }
         if (files.empty() || files.size() > 2)
             throw std::invalid_argument("expected map.json and day.json; use --help");
-        if (checks >= 0 && (!offline || !synthetic))
-            throw std::invalid_argument("test cancellation requires --offline --allow-synthetic");
+        if (checks >= 0 && !offline)
+            throw std::invalid_argument("test cancellation requires --offline");
         if (fallback && answer.empty())
             throw std::invalid_argument("--fallback-on-invalid requires --validate-answer");
         if (!report.empty()) {
@@ -76,7 +75,6 @@ int main(int argc, char **argv) {
         if (!kinds.empty()) {
             if (files.size() != 1 || !history.empty() || !answer.empty() || inspect || shape)
                 throw std::invalid_argument("--kinds requires only map.json and kinds.json");
-            if (!synthetic) wire::validate_contest_map(map);
             std::cout << wire::validate_kinds(wire::read_json(kinds), map.initial_positions.size()).dump() << '\n';
             return 0;
         }
@@ -93,7 +91,7 @@ int main(int argc, char **argv) {
         }
         std::optional<Json> past;
         if (!history.empty()) past = wire::read_json(history);
-        const auto input = wire::convert(map, daily, past, synthetic);
+        const auto input = wire::convert(map, daily, past);
         if (inspect) {
             std::cout << Json{{"normalized", input.normalized}, {"brand_dictionary", map.brands},
                                {"day", input.day_index}, {"requested_seconds", wire::solver_seconds}}.dump() << '\n';

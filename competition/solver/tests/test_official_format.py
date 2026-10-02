@@ -1,4 +1,4 @@
-"""Official PDF adapter gates. Python is test-only; the CLI is standalone C++."""
+"""Contest wire-format adapter tests. Python is test-only; the CLI is standalone C++."""
 from __future__ import annotations
 
 import copy
@@ -97,13 +97,17 @@ class OfficialFormatTests(unittest.TestCase):
         self.assertEqual(result['daily'], d)
         self.assertFalse(result['physical_validation_performed'])
         error = self.run_cli(m, d, flags=['--inspect'], success=False)
-        self.assertIn('contest.daySteps', error)
-        error = self.run_cli(m, d, past=history(m, d),
-                             flags=['--inspect', '--allow-synthetic'], success=False)
         self.assertIn('not a road cell', error)
-        types, _ = self.run_cli(m, kinds=json.loads((FIXTURES/'pdf_kinds.json').read_text()),
-                               flags=['--allow-synthetic'])
+        types, _ = self.run_cli(m, kinds=json.loads((FIXTURES/'pdf_kinds.json').read_text()))
         self.assertEqual(types, [0, 1, 0, 1])
+
+    def test_nonstandard_but_well_formed_fuel_capacity_is_accepted(self):
+        m, d = documents()
+        m['fuelLimits'] = 832
+        d['agents'][0]['fuel'] = 832
+        inspected, _ = self.run_cli(m, d, flags=['--inspect'])
+        self.assertEqual(inspected['normalized']['agents'][0]['capacity'], 832)
+        self.assertEqual(inspected['normalized']['agents'][0]['fuel'], 832)
 
     def test_official_conversion_and_explicit_budget(self):
         m, d = documents()
@@ -132,9 +136,9 @@ class OfficialFormatTests(unittest.TestCase):
         for _, original, exact, _ in suite():
             with self.subTest(case=original['id']):
                 m, d, past = from_normalized(original)
-                inspected, _ = self.run_cli(m, d, past=past, flags=['--inspect', '--allow-synthetic'])
+                inspected, _ = self.run_cli(m, d, past=past, flags=['--inspect'])
                 normalized = inspected['normalized']
-                actual, report = self.run_cli(m, d, past=past, flags=['--offline', '--allow-synthetic'])
+                actual, report = self.run_cli(m, d, past=past, flags=['--offline'])
                 expected = cpp(normalized, seconds=55)
                 self.assertEqual(actual, expected['plan']['actions'])
                 self.assertEqual(report['replay'], expected['replay'])
@@ -193,7 +197,7 @@ class OfficialFormatTests(unittest.TestCase):
             for kinds in ((0, 0, 0), (0, 1, 1), (1, 1, 1)):
                 with self.subTest(spots=spots, kinds=kinds):
                     m, d = documents(kinds=kinds, spots=spots)
-                    _, report = self.run_cli(m, d, flags=['--offline', '--allow-synthetic'])
+                    _, report = self.run_cli(m, d, flags=['--offline'])
                     self.assertTrue(report['replay']['valid'])
                     self.assertLessEqual(report['objective'][0], spots)
                     self.assertFalse(report['used_fallback'])
@@ -216,8 +220,8 @@ class OfficialFormatTests(unittest.TestCase):
     def test_q6_later_day_spot_wait_or_immediate_move_without_forced_wait(self):
         m, d = documents()
         d['agents'][0]['pos'] = m['spots'][0]['pos']
-        self.assertIn('first-day position/fuel',
-                      self.run_cli(m, d, flags=['--inspect'], success=False))
+        inspected0, _ = self.run_cli(m, d, flags=['--inspect'])
+        self.assertEqual(inspected0['normalized']['agents'][0]['cell'], m['spots'][0]['pos'])
         d['day'] = 1
         past = history(m, d)
         inspected, _ = self.run_cli(m, d, past=past, flags=['--inspect'])
@@ -238,7 +242,7 @@ class OfficialFormatTests(unittest.TestCase):
                 self.assertEqual(final['fuel'], p['fuel'])
     def test_maximum_shape_timeout_and_fallback(self):
         m, d = documents(size=32, steps=256, kinds=(0,0,0,0,0,0,1,1), spots=32)
-        plan, report = self.run_cli(m, d, flags=['--offline', '--allow-synthetic', '--test-check-budget', '0'])
+        plan, report = self.run_cli(m, d, flags=['--offline', '--test-check-budget', '0'])
         self.assertEqual(plan, [[-256]]*8)
         self.assertEqual(report['objective'], [0,0,0])
         self.assertTrue(report['replay']['valid'])
@@ -312,24 +316,24 @@ class OfficialFormatTests(unittest.TestCase):
         d['agents'] = [dict(kind=0,pos=0,fuel=0), dict(kind=1,pos=1,fuel=0), dict(kind=1,pos=2,fuel=0)]
         d['traffics'].append(dict(pos=0,status=0))
         # Arriving onto a supply cannot pay the fuel debit of this very arrival.
-        error = self.run_cli(m, d, answer=[[2,-3],[-4],[-4]], flags=['--allow-synthetic'], success=False)
+        error = self.run_cli(m, d, answer=[[2,-3],[-4],[-4]], success=False)
         self.assertIn('fuel_shortage', error)
         # Even colocated at time zero there is no reflection/refuel until t=1.
         d['agents'][1]['pos'] = 0
         self.assertIn('fuel_shortage', self.run_cli(m, d, answer=[[2,-3],[-4],[-4]],
-                                                  flags=['--allow-synthetic'], success=False))
-        _, report = self.run_cli(m, d, answer=[[-1,2,-2],[-4],[-4]], flags=['--allow-synthetic'])
+                                                  success=False))
+        _, report = self.run_cli(m, d, answer=[[-1,2,-2],[-4],[-4]])
         self.assertEqual(report['replay']['committed_state']['agents'][0]['fuel'], 1)
         # First contact at the very last reflection still refills the patrol.
         m, d = documents(steps=2, kinds=(0,1,1), spots=0)
         m['fuelLimits'] = 3
         d['agents'][0]['fuel'] = 1
-        _, report = self.run_cli(m, d, answer=[[2],[-2],[-2]], flags=['--allow-synthetic'])
+        _, report = self.run_cli(m, d, answer=[[2],[-2],[-2]])
         self.assertEqual(report['replay']['trace'][0]['refueled_agent_ids'], [])
         self.assertEqual(report['replay']['trace'][1]['refueled_agent_ids'], [0])
         self.assertEqual(report['replay']['committed_state']['agents'][0]['fuel'], 3)
         # A supply leaving that cell simultaneously is not a contact.
-        _, report = self.run_cli(m, d, answer=[[2],[2],[-2]], flags=['--allow-synthetic'])
+        _, report = self.run_cli(m, d, answer=[[2],[2],[-2]])
         self.assertEqual(report['replay']['committed_state']['agents'][0]['fuel'], 0)
         self.assertEqual(report['replay']['trace'][1]['refueled_agent_ids'], [])
 
@@ -343,7 +347,7 @@ class OfficialFormatTests(unittest.TestCase):
         d['traffics'] = [dict(pos=0,status=0),dict(pos=1,status=1)]
         answer = [[2,2,2,-1],[-1,2,2,2],[-2,2,2,-1],[-3,2,-2],
                   [5,5,-2],[5,5,-2],[-2,5,5],[5,5,-2]]
-        actual, report = self.run_cli(m, d, answer=answer, flags=['--allow-synthetic'])
+        actual, report = self.run_cli(m, d, answer=answer)
         self.assertEqual(actual, answer)
         frames = report['replay']['trace']
         self.assertEqual([f['state']['agents'][5]['fuel'] for f in frames], [3,2,2,1,1,1])
@@ -365,7 +369,7 @@ class OfficialFormatTests(unittest.TestCase):
         m['map']['cells'][3][3] = 2
         d['agents'] = [dict(kind=0,pos=27,fuel=15),dict(kind=1,pos=27,fuel=0)]
         answer = json.loads((FIXTURES/'pdf_answer.json').read_text())
-        actual, report = self.run_cli(m, d, answer=answer, flags=['--allow-synthetic'])
+        actual, report = self.run_cli(m, d, answer=answer)
         self.assertEqual(actual, answer)
         self.assertTrue(report['replay']['valid'])
 
@@ -382,7 +386,7 @@ class OfficialFormatTests(unittest.TestCase):
                 with self.subTest(source=source, direction=direction):
                     m, d = documents(steps=2, spots=0)
                     d['agents'][0]['pos'] = source
-                    _, r = self.run_cli(m, d, answer=[[direction],[-2],[-2]], flags=['--allow-synthetic'])
+                    _, r = self.run_cli(m, d, answer=[[direction],[-2],[-2]])
                     self.assertEqual(r['replay']['committed_state']['agents'][0]['cell'], destination)
 
     def test_daily_index_and_traffic_change_without_stale_conversion(self):

@@ -86,3 +86,4 @@ Thumbs.db
 Desktop.ini
 
 # Keep source, test fixtures, licenses, and viewer/App/engine resources tracked.
+private/
