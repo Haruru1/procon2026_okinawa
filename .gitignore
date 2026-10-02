@@ -1,0 +1,88 @@
+# Documentation and generated source inventory
+*.md
+*.MD
+*.markdown
+SOURCE_MANIFEST*
+
+# Build output
+build/
+Intermediate/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+obj/
+*.exe
+*.dll
+*.obj
+*.o
+*.pch
+*.pdb
+*.ilk
+*.idb
+*.iobj
+*.ipdb
+*.lib
+*.a
+*.so
+*.dylib
+*.res
+*.tlog
+*.lastbuildstate
+
+# Visual Studio per-user state
+.vs/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+*.opendb
+*.ipch
+*.aps
+
+# CMake generated files
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
+
+# Python environments and caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Match output, local settings, and credentials
+/runs/
+/logs/
+/jobs/
+/local/
+/journal.json
+/history.json
+/report.json
+/result.json
+*.log
+.env
+.env.*
+!.env.example
+
+# Temporary files and distribution archives
+.cache/
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+*.zip
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Keep source, test fixtures, licenses, and viewer/App/engine resources tracked.

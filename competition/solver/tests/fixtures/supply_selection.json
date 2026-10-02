@@ -1,0 +1,1108 @@
+[
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 0,
+    "kinds": [
+      0,
+      0,
+      0
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 0,
+      "supply_ids": [],
+      "max_nearest_patrol_steps": null,
+      "sum_nearest_patrol_steps": null,
+      "sum_nearest_spot_steps": null,
+      "combinations": 1
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 1,
+    "kinds": [
+      0,
+      1,
+      0
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 1,
+      "supply_ids": [
+        1
+      ],
+      "max_nearest_patrol_steps": 2,
+      "sum_nearest_patrol_steps": 4,
+      "sum_nearest_spot_steps": 0,
+      "combinations": 3
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 2,
+    "kinds": [
+      1,
+      1,
+      0
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 2,
+      "supply_ids": [
+        0,
+        1
+      ],
+      "max_nearest_patrol_steps": 2,
+      "sum_nearest_patrol_steps": 2,
+      "sum_nearest_spot_steps": 0,
+      "combinations": 3
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 3,
+    "kinds": [
+      1,
+      1,
+      1
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 3,
+      "supply_ids": [
+        0,
+        1,
+        2
+      ],
+      "max_nearest_patrol_steps": 0,
+      "sum_nearest_patrol_steps": 0,
+      "sum_nearest_spot_steps": null,
+      "combinations": 1
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [
+        {
+          "brand": 0,
+          "pos": 8,
+          "stocks": 1
+        },
+        {
+          "brand": 1,
+          "pos": 9,
+          "stocks": 1
+        },
+        {
+          "brand": 2,
+          "pos": 10,
+          "stocks": 1
+        }
+      ],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 0,
+    "kinds": [
+      0,
+      0,
+      0
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 0,
+      "supply_ids": [],
+      "max_nearest_patrol_steps": null,
+      "sum_nearest_patrol_steps": null,
+      "sum_nearest_spot_steps": null,
+      "combinations": 1
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [
+        {
+          "brand": 0,
+          "pos": 8,
+          "stocks": 1
+        },
+        {
+          "brand": 1,
+          "pos": 9,
+          "stocks": 1
+        },
+        {
+          "brand": 2,
+          "pos": 10,
+          "stocks": 1
+        }
+      ],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 1,
+    "kinds": [
+      0,
+      1,
+      0
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 1,
+      "supply_ids": [
+        1
+      ],
+      "max_nearest_patrol_steps": 2,
+      "sum_nearest_patrol_steps": 4,
+      "sum_nearest_spot_steps": 8,
+      "combinations": 3
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [
+        {
+          "brand": 0,
+          "pos": 8,
+          "stocks": 1
+        },
+        {
+          "brand": 1,
+          "pos": 9,
+          "stocks": 1
+        },
+        {
+          "brand": 2,
+          "pos": 10,
+          "stocks": 1
+        }
+      ],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 2,
+    "kinds": [
+      1,
+      1,
+      0
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 2,
+      "supply_ids": [
+        0,
+        1
+      ],
+      "max_nearest_patrol_steps": 2,
+      "sum_nearest_patrol_steps": 2,
+      "sum_nearest_spot_steps": 6,
+      "combinations": 3
+    }
+  },
+  {
+    "setting": {
+      "startsAt": 1778227200,
+      "daySeconds": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "daySteps": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "map": {
+        "height": 8,
+        "width": 8,
+        "cells": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "spots": [
+        {
+          "brand": 0,
+          "pos": 8,
+          "stocks": 1
+        },
+        {
+          "brand": 1,
+          "pos": 9,
+          "stocks": 1
+        },
+        {
+          "brand": 2,
+          "pos": 10,
+          "stocks": 1
+        }
+      ],
+      "agents": [
+        0,
+        1,
+        2
+      ],
+      "fuelLimits": 16,
+      "players": 1,
+      "busyThreshold": 2,
+      "jammedThreshold": 4
+    },
+    "supply_count": 3,
+    "kinds": [
+      1,
+      1,
+      1
+    ],
+    "details": {
+      "policy": "initial_position_minimax",
+      "supply_count": 3,
+      "supply_ids": [
+        0,
+        1,
+        2
+      ],
+      "max_nearest_patrol_steps": 0,
+      "sum_nearest_patrol_steps": 0,
+      "sum_nearest_spot_steps": null,
+      "combinations": 1
+    }
+  }
+]
